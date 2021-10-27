@@ -3,7 +3,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter.scrolledtext import *
-import os
 class GUI:
     def __init__(self,parent):
         #---setup stuff---
@@ -12,24 +11,30 @@ class GUI:
         self.parent.geometry("500x500+0+0")
         self.parent.bind('<Escape>', self.close)
         #---widgets---
-        self.lbl_sold = Label(self.parent,text="Sold: 0",anchor="w")
-        self.lbl_instock = Label(self.parent,text="In Stock: 0",anchor="e")
-        #self.btn_img_foward = Button(self.parent,text='>>')
+        self.frame = Frame(self.parent,bd=0,height=1)
+        self.lbl_sold = Label(self.frame,text="Sold: 0",anchor="w", bg='red')
+        self.lbl_instock = Label(self.frame,text="In Stock: 0",anchor="e",bg='green')
 
         #---pack---
-        self.lbl_sold.place(relx = 0.0,
-                  rely = 0.0,
-                  anchor ='nw')
-        self.lbl_instock.place(relx = 1.0,
-                  rely = 0.0,
-                  anchor ='ne')
+        self.frame.pack(fill=X)
+        self.lbl_sold.pack(side='left')
+        self.lbl_instock.pack(side='right')
+
+        test = Clothing(parent,'test',4)
     #defs
-    def print_selected(self):
-        temp = self.sv.get()
-        self.lbl.config(text=temp)
     def close(self,event):
         if (messagebox.askquestion('Exit?',"Are you sure you want to quit") == 'yes'):
             self.parent.destroy()
+class Clothing:
+    def __init__(self,parent,name,stock):
+        self.name = name
+        self.stock = stock
+        self.parent = parent
+        self.frame = LabelFrame(self.parent,text=self.name)
+        self.lbl = Label(self.frame,text='test',bg='blue')
+        #pack
+        self.frame.pack(fill=BOTH,expand='yes',padx=5)
+        self.lbl.pack()
 #main stuff
 root = Tk()
 form = GUI(root)
