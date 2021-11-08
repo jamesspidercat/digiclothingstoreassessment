@@ -2,6 +2,7 @@ import random
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+import tkinter
 from tkinter.scrolledtext import *
 class GUI:
     def __init__(self,parent):
@@ -22,13 +23,38 @@ class GUI:
         self.lbl_instock.pack(side='right')
         
     #defs
-    def clothing_setup(self,parent):
+    def restock_setup(self):
+        #dropdown menu
+        self.option_selected = StringVar()
+        self.option_selected.set("Select Item To Restock")
+        self.optmenu_items = []
+
+        for i in self.clothing_objects:
+            self.optmenu_items.append(i.name)
+        
+        self.optmenu_restock = OptionMenu(self.parent,self.option_selected,*self.optmenu_items)
+        #number entry
+        self.entry_lbl = Label(self.parent, text='Restock Amount:')
+        self.entry_text = StringVar()
+        self.entry_restock = Entry(self.parent,textvariable=self.entry_text)
+        #button
+        self.btn_restock = Button(self.parent,text="Restock",command=self.restock)
+        #pack
+        self.optmenu_restock.pack()
+        self.entry_lbl.pack()
+        self.entry_restock.pack()
+    def restock(self):
+        for i in self.clothing_objects:
+            if (i.name == self.entry_text):
+                #do stuff, i think this will need me to change the stock vars to private and make function to change them
+                break
+    def clothing_setup(self):
         self.clothing_list = [['Summer Hoodie',8],['Winter Hoodie',12],['Tracksuit',3]]
         self.clothing_objects = []
         for i in range(len(self.clothing_list)):
-            setattr(self,'item'+str(i),Clothing(parent,self.clothing_list[i][0],self.clothing_list[i][1]))
+            setattr(self,'item'+str(i),Clothing(self.parent,self.clothing_list[i][0],self.clothing_list[i][1]))
 
-    def close(self,event):#on esc press confirms if you want to leave
+    def close(self,event):#on esc press; confirms if you want to leave
         if (messagebox.askquestion('Exit?',"Are you sure you want to quit") == 'yes'):
             self.parent.destroy()
 
@@ -74,5 +100,6 @@ class Clothing:
 #main stuff
 root = Tk()
 gui = GUI(root)
-gui.clothing_setup(root)
+gui.clothing_setup()
+gui.restock_setup()
 root.mainloop()
