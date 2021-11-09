@@ -1,9 +1,9 @@
+#imports
 import random
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-import tkinter
-from tkinter.scrolledtext import *
+#classes
 class GUI:
     def __init__(self,parent):
         #---setup stuff---
@@ -37,19 +37,36 @@ class GUI:
         self.entry_lbl = Label(self.parent, text='Restock Amount:')
         self.entry_text = StringVar()
         self.entry_restock = Entry(self.parent,textvariable=self.entry_text)
+        self.entry_restock.bind('<Return>',self.restock)
         #button
         self.btn_restock = Button(self.parent,text="Restock",command=self.restock)
         #pack
         self.optmenu_restock.pack()
         self.entry_lbl.pack()
         self.entry_restock.pack()
-    def restock(self):
-        for i in self.clothing_objects:
-            if (i.name == self.entry_text):
-                #do stuff, i think this will need me to change the stock vars to private and make function to change them
-                break
+        self.btn_restock.pack()
+
+    def restock(self,event="button"):
+        try:#checks if you have entered a number in the textbox, if not displays error
+            self.restock_ammount = int(self.entry_text.get())
+        except:
+            messagebox.showerror('Error','Please Enter A Valid Number')
+            return
+        temp = False
+        if (self.restock_ammount > 0):
+            for i in self.clothing_objects:
+                if (i.name == self.option_selected.get()):
+                    i.stock += self.restock_ammount
+                    self.refresh()
+                    temp = True
+                    break
+            if (temp == False):
+                messagebox.showerror('Error','Please Select An Item Of Clothing To Restock')
+        else:
+            messagebox.showerror('Error','Please Enter A Positive Number Above 0')
+
     def clothing_setup(self):
-        self.clothing_list = [['Summer Hoodie',8],['Winter Hoodie',12],['Tracksuit',3]]
+        self.clothing_list = [['Summer Hoodie',8],['Winter Hoodie',12],['Tracksuit',3]]#you can edit avalible clothing and stock here
         self.clothing_objects = []
         for i in range(len(self.clothing_list)):
             setattr(self,'item'+str(i),Clothing(self.parent,self.clothing_list[i][0],self.clothing_list[i][1]))
